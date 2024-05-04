@@ -21,7 +21,7 @@ import (
 
 // RouteMutator is the struct used to mutate Routes
 type RouteMutator struct {
-	Decoder *admission.Decoder
+	Decoder admission.Decoder
 	Client  client.Client
 }
 

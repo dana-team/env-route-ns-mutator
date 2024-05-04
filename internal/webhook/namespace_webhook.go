@@ -16,7 +16,7 @@ import (
 
 // NamespaceMutator is the struct used to mutate Routes
 type NamespaceMutator struct {
-	Decoder *admission.Decoder
+	Decoder admission.Decoder
 	Client  client.Client
 }
 
