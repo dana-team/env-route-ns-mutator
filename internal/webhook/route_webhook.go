@@ -27,6 +27,9 @@ type RouteMutator struct {
 
 const clusterIngressName = "cluster"
 
+// +kubebuilder:rbac:groups="route.openshift.io",resources=routes,verbs=get;list;watch;create;update;patch
+// +kubebuilder:rbac:groups="config.openshift.io",resources=ingresses,verbs=get;list;watch
+
 // +kubebuilder:webhook:path=/mutate-v1-route,mutating=true,failurePolicy=ignore,sideEffects=None,groups=route.openshift.io,resources=routes,verbs=create;update,versions=v1,name=route.dana.io,admissionReviewVersions=v1;v1beta1
 
 func (r *RouteMutator) Handle(ctx context.Context, req admission.Request) admission.Response {
@@ -52,11 +55,6 @@ func (r *RouteMutator) Handle(ctx context.Context, req admission.Request) admiss
 	}
 
 	environments := environment.GetEnvironments()
-	if err != nil {
-		logger.Error(err, "failed to get environments")
-		return admission.Errored(http.StatusInternalServerError, err)
-	}
-
 	r.handleInner(logger, &route, clusterIngress, environments, namespace.ObjectMeta.Labels)
 
 	marshaledRoute, err := json.Marshal(route)
@@ -76,13 +74,13 @@ func (r *RouteMutator) handleInner(logger logr.Logger, route *routev1.Route, clu
 			switch {
 			case len(routeHost) == 0:
 				routeHost = fmt.Sprintf("%s-%s.%s-%s", route.Name, route.Namespace, env, clusterIngress)
-				logger.Info("Route hostname is empty, modifying to - %q", routeHost)
+				logger.Info("Route hostname is empty, modifying", "routeHost", routeHost)
 			case strings.Contains(routeHost, clusterIngress):
 				environmentIngress := fmt.Sprintf("%s-%s", env, clusterIngress)
 				routeHost = strings.Replace(routeHost, clusterIngress, environmentIngress, 1)
-				logger.Info("Route hostname includes cluster ingress, modifying to - %q", routeHost)
+				logger.Info("Route hostname includes cluster ingress, modifying", "routeHost", routeHost)
 			default:
-				logger.Info("Route hostname is shortened, remains unchanged - %q", routeHost)
+				logger.Info("Route hostname is shortened, remains unchanged", "routeHost", routeHost)
 			}
 
 			route.Spec.Host = routeHost

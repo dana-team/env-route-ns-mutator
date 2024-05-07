@@ -24,6 +24,7 @@ import (
 	envwebhook "github.com/dana-team/env-route-ns-mutator/internal/webhook"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
+	configv1 "github.com/openshift/api/config/v1"
 	routev1 "github.com/openshift/api/route/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
@@ -45,6 +46,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 	utilruntime.Must(routev1.Install(scheme))
+	utilruntime.Must(configv1.Install(scheme))
 
 	//+kubebuilder:scaffold:scheme
 }
