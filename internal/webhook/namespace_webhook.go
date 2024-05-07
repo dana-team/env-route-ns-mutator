@@ -22,6 +22,8 @@ type NamespaceMutator struct {
 
 const DefaultSchedulerAnnotation = "scheduler.alpha.kubernetes.io/defaultTolerations"
 
+// +kubebuilder:rbac:groups="",resources=namespaces,verbs=get;list;watch;create;update;patch
+
 // +kubebuilder:webhook:path=/mutate-v1-namespace,mutating=true,failurePolicy=ignore,sideEffects=None,groups="",resources=namespaces,verbs=create;update,versions=v1,name=namespace.dana.io,admissionReviewVersions=v1;v1beta1
 
 func (r *NamespaceMutator) Handle(ctx context.Context, req admission.Request) admission.Response {
