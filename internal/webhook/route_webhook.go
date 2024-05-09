@@ -30,7 +30,7 @@ const clusterIngressName = "cluster"
 // +kubebuilder:rbac:groups="route.openshift.io",resources=routes,verbs=get;list;watch;create;update;patch
 // +kubebuilder:rbac:groups="config.openshift.io",resources=ingresses,verbs=get;list;watch
 
-// +kubebuilder:webhook:path=/mutate-v1-route,mutating=true,failurePolicy=ignore,sideEffects=None,groups=route.openshift.io,resources=routes,verbs=create;update,versions=v1,name=route.dana.io,admissionReviewVersions=v1;v1beta1
+// +kubebuilder:webhook:path=/mutate-v1-route,mutating=true,failurePolicy=ignore,sideEffects=None,groups=route.openshift.io,resources=routes,verbs=create,versions=v1,name=route.dana.io,admissionReviewVersions=v1;v1beta1
 
 func (r *RouteMutator) Handle(ctx context.Context, req admission.Request) admission.Response {
 	logger := log.FromContext(ctx).WithName("Route").WithValues("name", req.Name)
