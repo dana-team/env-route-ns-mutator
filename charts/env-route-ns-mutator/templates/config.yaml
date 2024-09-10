@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.config.name }}
+  labels:
+    {{- include "env-route-ns-mutator.labels" . | nindent 4 }}
+data:
+  environments: {{ join "," .Values.config.environments }}

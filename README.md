@@ -87,6 +87,16 @@ spec:
 $ make deploy IMG=ghcr.io/dana-team/env-route-ns-mutator:<release>
 ```
 
+### Install with Helm
+
+Helm chart docs are available on `charts/env-route-ns-mutator` directory.
+
+Make sure `cert-manager` is [installed](https://cert-manager.io/docs/installation/helm/) as a prerequisite.
+
+```
+$ helm upgrade --install env-route-ns-mutator --namespace env-route-ns-mutator-system --create-namespace oci://ghcr.io/dana-team/helm-charts/env-route-ns-mutator --version <release>
+```
+
 #### Build your own image
 
 ```bash
