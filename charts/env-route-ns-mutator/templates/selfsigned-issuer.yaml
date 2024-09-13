@@ -1,0 +1,8 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ include "env-route-ns-mutator.fullname" . }}-selfsigned-issuer
+  labels:
+  {{- include "env-route-ns-mutator.labels" . | nindent 4 }}
+spec:
+  selfSigned: {}
