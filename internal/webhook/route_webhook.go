@@ -25,7 +25,10 @@ type RouteMutator struct {
 	Client  client.Client
 }
 
-const clusterIngressName = "cluster"
+const (
+	clusterIngressName = "cluster"
+	bypassLabel        = "haproxy.router.dana.io/bypass-env-mutation"
+)
 
 // +kubebuilder:rbac:groups="route.openshift.io",resources=routes,verbs=get;list;watch;create;update;patch
 // +kubebuilder:rbac:groups="config.openshift.io",resources=ingresses,verbs=get;list;watch
@@ -68,6 +71,10 @@ func (r *RouteMutator) Handle(ctx context.Context, req admission.Request) admiss
 // handleInner implements the main mutating logic. It modifies the host of an OpenShift Route
 // based on environment data and cluster ingress information.
 func (r *RouteMutator) handleInner(logger logr.Logger, route *routev1.Route, clusterIngress string, environments []string, labels map[string]string) {
+	if checkBypass(labels) {
+		logger.Info("Bypassing mutation")
+		return
+	}
 	for _, env := range environments {
 		if labels[environment.Key] == env {
 			routeHost := route.Spec.Host
@@ -96,4 +103,13 @@ func (r *RouteMutator) getClusterIngressDomain(ctx context.Context) (string, err
 		return "", err
 	}
 	return ingress.Spec.Domain, nil
+}
+
+// checkBypass checks if the namespace has the bypass mutation label.
+func checkBypass(labels map[string]string) bool {
+	if val, ok := labels[bypassLabel]; ok && val == "true" {
+		return true
+	}
+
+	return false
 }

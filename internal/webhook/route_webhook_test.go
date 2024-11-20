@@ -41,6 +41,8 @@ func TestRouteMutator(t *testing.T) {
 		{name: "routeWithCustomNameDefaultDomain", namespace: testNamespace, hostname: "test2", customDomain: "", defaultDomain: true, nsLabels: map[string]string{environment.Key: env1}, mutated: true},
 		{name: "routeWithNoCustomNameNoDomain", namespace: testNamespace, hostname: "", customDomain: "", defaultDomain: false, nsLabels: map[string]string{environment.Key: env1}, mutated: true},
 		{name: "routeWithoutLabels", namespace: testNamespace, hostname: "test5", customDomain: "", defaultDomain: true, nsLabels: map[string]string{}, mutated: false},
+		{name: "routeWithBypassLabel", namespace: testNamespace, hostname: "test6", customDomain: "", defaultDomain: true, nsLabels: map[string]string{bypassLabel: "true", environment.Key: env1}, mutated: false},
+		{name: "routeWithInvalidBypassLabel", namespace: testNamespace, hostname: "test7", customDomain: "", defaultDomain: true, nsLabels: map[string]string{bypassLabel: "false", environment.Key: env1}, mutated: true},
 	}
 
 	client := testclient.NewClientBuilder().WithScheme(scheme.Scheme).Build()
