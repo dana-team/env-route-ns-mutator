@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/dana-team/env-route-ns-mutator/internal/environment"
+	"github.com/dana-team/env-route-ns-mutator/internal/utils"
 	"github.com/go-logr/logr"
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -36,7 +36,7 @@ func (r *NamespaceMutator) Handle(ctx context.Context, req admission.Request) ad
 		return admission.Errored(http.StatusInternalServerError, err)
 	}
 
-	environments := environment.GetEnvironments()
+	environments := utils.GetEnvironments()
 	r.handleInner(logger, &namespace, environments)
 
 	marshaledNamespace, err := json.Marshal(namespace)
@@ -55,23 +55,10 @@ func (r *NamespaceMutator) handleInner(logger logr.Logger, namespace *corev1.Nam
 			toleration := fmt.Sprintf("[{\"operator\": \"Exists\", \"effect\": \"NoSchedule\", \"key\": %s}]", env)
 
 			if value == toleration {
-				labels := appendLabels(namespace.GetLabels(), map[string]string{environment.Key: env})
+				labels := utils.AppendLabels(namespace.GetLabels(), map[string]string{utils.Key: env})
 				namespace.SetLabels(labels)
 				logger.Info("successfully updated labels")
 			}
 		}
 	}
-}
-
-// appendLabels appends the received labels to the namespace.
-func appendLabels(nsLabels, labels map[string]string) map[string]string {
-	if len(nsLabels) == 0 {
-		nsLabels = map[string]string{}
-	}
-
-	for key, value := range labels {
-		nsLabels[key] = value
-	}
-
-	return nsLabels
 }

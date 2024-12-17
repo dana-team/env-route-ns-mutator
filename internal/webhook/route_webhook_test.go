@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/dana-team/env-route-ns-mutator/internal/environment"
+	"github.com/dana-team/env-route-ns-mutator/internal/utils"
 
 	. "github.com/onsi/gomega"
 	routev1 "github.com/openshift/api/route/v1"
@@ -36,13 +36,13 @@ func TestRouteMutator(t *testing.T) {
 		nsLabels      map[string]string
 		mutated       bool
 	}{
-		{name: "routeWithCustomNameCustomDomain", namespace: testNamespace, hostname: "test1", customDomain: "custom.com", defaultDomain: false, nsLabels: map[string]string{environment.Key: env1}, mutated: false},
-		{name: "routeWithCustomNameNoDomain", namespace: testNamespace, hostname: "test3", customDomain: "", defaultDomain: false, nsLabels: map[string]string{environment.Key: env1}, mutated: false},
-		{name: "routeWithCustomNameDefaultDomain", namespace: testNamespace, hostname: "test2", customDomain: "", defaultDomain: true, nsLabels: map[string]string{environment.Key: env1}, mutated: true},
-		{name: "routeWithNoCustomNameNoDomain", namespace: testNamespace, hostname: "", customDomain: "", defaultDomain: false, nsLabels: map[string]string{environment.Key: env1}, mutated: true},
+		{name: "routeWithCustomNameCustomDomain", namespace: testNamespace, hostname: "test1", customDomain: "custom.com", defaultDomain: false, nsLabels: map[string]string{utils.Key: env1}, mutated: false},
+		{name: "routeWithCustomNameNoDomain", namespace: testNamespace, hostname: "test3", customDomain: "", defaultDomain: false, nsLabels: map[string]string{utils.Key: env1}, mutated: false},
+		{name: "routeWithCustomNameDefaultDomain", namespace: testNamespace, hostname: "test2", customDomain: "", defaultDomain: true, nsLabels: map[string]string{utils.Key: env1}, mutated: true},
+		{name: "routeWithNoCustomNameNoDomain", namespace: testNamespace, hostname: "", customDomain: "", defaultDomain: false, nsLabels: map[string]string{utils.Key: env1}, mutated: true},
 		{name: "routeWithoutLabels", namespace: testNamespace, hostname: "test5", customDomain: "", defaultDomain: true, nsLabels: map[string]string{}, mutated: false},
-		{name: "routeWithBypassLabel", namespace: testNamespace, hostname: "test6", customDomain: "", defaultDomain: true, nsLabels: map[string]string{bypassLabel: "true", environment.Key: env1}, mutated: false},
-		{name: "routeWithInvalidBypassLabel", namespace: testNamespace, hostname: "test7", customDomain: "", defaultDomain: true, nsLabels: map[string]string{bypassLabel: "false", environment.Key: env1}, mutated: true},
+		{name: "routeWithBypassLabel", namespace: testNamespace, hostname: "test6", customDomain: "", defaultDomain: true, nsLabels: map[string]string{bypassLabel: "true", utils.Key: env1}, mutated: false},
+		{name: "routeWithInvalidBypassLabel", namespace: testNamespace, hostname: "test7", customDomain: "", defaultDomain: true, nsLabels: map[string]string{bypassLabel: "false", utils.Key: env1}, mutated: true},
 	}
 
 	client := testclient.NewClientBuilder().WithScheme(scheme.Scheme).Build()
@@ -71,9 +71,9 @@ func TestRouteMutator(t *testing.T) {
 			if tc.mutated {
 				switch {
 				case len(routeHost) == 0:
-					mutatedHost = fmt.Sprintf("%s-%s.%s-%s", tc.name, tc.namespace, tc.nsLabels[environment.Key], clusterIngressDomain)
+					mutatedHost = fmt.Sprintf("%s-%s.%s-%s", tc.name, tc.namespace, tc.nsLabels[utils.Key], clusterIngressDomain)
 				case tc.defaultDomain:
-					mutatedHost = fmt.Sprintf("%s.%s-%s", tc.hostname, tc.nsLabels[environment.Key], clusterIngressDomain)
+					mutatedHost = fmt.Sprintf("%s.%s-%s", tc.hostname, tc.nsLabels[utils.Key], clusterIngressDomain)
 				default:
 					mutatedHost = routeHost
 				}
