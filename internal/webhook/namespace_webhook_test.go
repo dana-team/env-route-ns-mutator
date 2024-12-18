@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/dana-team/env-route-ns-mutator/internal/environment"
+	"github.com/dana-team/env-route-ns-mutator/internal/utils"
 	corev1 "k8s.io/api/core/v1"
 
 	. "github.com/onsi/gomega"
@@ -49,9 +49,9 @@ func TestNamespaceMutator(t *testing.T) {
 			rm.handleInner(logger, namespace, environments)
 
 			if tc.mutated {
-				g.Expect(namespace.GetLabels()[environment.Key]).To(Equal(tc.env))
+				g.Expect(namespace.GetLabels()[utils.Key]).To(Equal(tc.env))
 			} else {
-				g.Expect(namespace.GetLabels()[environment.Key]).To(BeEmpty())
+				g.Expect(namespace.GetLabels()[utils.Key]).To(BeEmpty())
 			}
 		})
 	}

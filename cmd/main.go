@@ -130,11 +130,18 @@ func main() {
 
 	hookServer.Register("/mutate-v1-route", &webhook.Admission{Handler: &envwebhook.RouteMutator{
 		Decoder: decoder,
-		Client:  mgr.GetClient()}})
+		Client:  mgr.GetClient(),
+	}})
 
 	hookServer.Register("/mutate-v1-namespace", &webhook.Admission{Handler: &envwebhook.NamespaceMutator{
 		Decoder: decoder,
-		Client:  mgr.GetClient()}})
+		Client:  mgr.GetClient(),
+	}})
+
+	hookServer.Register("/mutate-v1-ingress", &webhook.Admission{Handler: &envwebhook.IngressMutator{
+		Decoder: decoder,
+		Client:  mgr.GetClient(),
+	}})
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
 		setupLog.Error(err, "unable to set up health check")
