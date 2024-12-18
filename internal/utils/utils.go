@@ -66,6 +66,8 @@ func ModifyHostname(logger logr.Logger, objectName, objectNamespace, hostName, e
 	case len(hostName) == 0:
 		modifiedHostname = fmt.Sprintf("%s-%s.%s-%s", objectName, objectNamespace, env, clusterIngress)
 		logger.Info("Hostname is empty, modifying", "hostname", hostName)
+	case strings.Contains(hostName, fmt.Sprintf("%s-%s", env, clusterIngress)):
+		logger.Info("Hostname already includes environment, remains unchanged", "hostname", hostName)
 	case strings.Contains(hostName, clusterIngress):
 		environmentIngress := fmt.Sprintf("%s-%s", env, clusterIngress)
 		modifiedHostname = strings.Replace(hostName, clusterIngress, environmentIngress, 1)

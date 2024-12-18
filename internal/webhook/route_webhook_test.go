@@ -43,6 +43,7 @@ func TestRouteMutator(t *testing.T) {
 		{name: "routeWithoutLabels", namespace: testNamespace, hostname: "test5", customDomain: "", defaultDomain: true, nsLabels: map[string]string{}, mutated: false},
 		{name: "routeWithBypassLabel", namespace: testNamespace, hostname: "test6", customDomain: "", defaultDomain: true, nsLabels: map[string]string{bypassLabel: "true", utils.Key: env1}, mutated: false},
 		{name: "routeWithInvalidBypassLabel", namespace: testNamespace, hostname: "test7", customDomain: "", defaultDomain: true, nsLabels: map[string]string{bypassLabel: "false", utils.Key: env1}, mutated: true},
+		{name: "routeWithMutatedHostname", namespace: testNamespace, hostname: "test8", customDomain: fmt.Sprintf("%s-%s", env1, clusterIngressDomain), defaultDomain: false, nsLabels: map[string]string{utils.Key: env1}, mutated: false},
 	}
 
 	client := testclient.NewClientBuilder().WithScheme(scheme.Scheme).Build()
