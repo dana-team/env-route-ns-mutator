@@ -3,7 +3,7 @@ module github.com/dana-team/env-route-ns-mutator
 go 1.23.4
 
 require (
-	github.com/go-logr/logr v1.4.2
+	github.com/go-logr/logr v1.4.3
 	github.com/onsi/gomega v1.37.0
 	github.com/openshift/api v0.0.0-20240503220213-0a2abb2b630b
 	k8s.io/api v0.32.3
